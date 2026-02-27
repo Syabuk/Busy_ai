@@ -1,0 +1,10 @@
+{
+  "users": [
+    {
+      "username": "admin",
+      "password_hash": "2c0c2b48f5e7e218cc6e2fc0a5356f70bcea3c883c2a4bf1d5e5f2bac65e339c",
+      "salt": "f91ccc31-85d9-42b5-92e3-e8663c4cdea2",
+      "created_at": "27.02.2026 15:17:55"
+    }
+  ]
+}

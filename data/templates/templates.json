@@ -1,0 +1,38 @@
+[
+  {
+    "id": 1,
+    "name": "На встрече",
+    "status": "meeting",
+    "status_text": "На встрече",
+    "current_activity": "Обсуждаю проект с командой",
+    "custom_message": "Вернусь через 30 минут",
+    "color_scheme": "yellow"
+  },
+  {
+    "id": 2,
+    "name": "Не беспокоить",
+    "status": "busy",
+    "status_text": "Не беспокоить",
+    "current_activity": "Сосредоточенная работа",
+    "custom_message": "Пожалуйста, не отвлекайте",
+    "color_scheme": "red"
+  },
+  {
+    "id": 3,
+    "name": "Обеденный перерыв",
+    "status": "away",
+    "status_text": "Отошёл",
+    "current_activity": "Обеденный перерыв",
+    "custom_message": "Вернусь в 14:00",
+    "color_scheme": "gray"
+  },
+  {
+    "name": "1123",
+    "status": "busy",
+    "status_text": "Не беспокоить",
+    "current_activity": "Сосредоточенная работа",
+    "custom_message": "Пожалуйста, не отвлекайте",
+    "color_scheme": "red",
+    "id": 4
+  }
+]

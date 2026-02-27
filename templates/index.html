@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1.0, user-scalable=no"
+    />
+    <meta http-equiv="refresh" content="60" />
+    <title>Статус занятости</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        -webkit-tap-highlight-color: transparent;
+      }
+      body {
+        transition: background 0.5s ease;
+      }
+
+      .theme-blue {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+      .theme-red {
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+      }
+      .theme-green {
+        background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+      }
+      .theme-yellow {
+        background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+      }
+      .theme-purple {
+        background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);
+      }
+      .theme-gray {
+        background: linear-gradient(135deg, #e6e9f0 0%, #eef1f5 100%);
+      }
+
+      .container {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 5vh;
+        text-align: center;
+      }
+
+      .status-card {
+        background: rgba(255, 255, 255, 0.95);
+        border-radius: 30px;
+        padding: 5vh;
+        box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+        backdrop-filter: blur(10px);
+        width: 100%;
+        height: 100%;
+        /* max-width: 90vw;
+        max-height: 90vh; */
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+
+      .texts {
+        padding: 2vh;
+      }
+
+      .user-avatar {
+        width: 20vh;
+        height: 20vh;
+        border-radius: 50%;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+        margin: 0 auto 3vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 6vh;
+        color: white;
+        border: 1vh solid white;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      }
+
+      .user-name {
+        font-size: 6vh;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 2vh;
+        line-height: 1.2;
+      }
+
+      .status-indicator {
+        display: inline-block;
+        padding: 2vh 4vh;
+        border-radius: 50px;
+        font-size: 3vh;
+        font-weight: bold;
+        margin-bottom: 3vh;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        border: 0.5vh solid;
+      }
+
+      .status-available {
+        background: #d4edda;
+        color: #155724;
+        border-color: #c3e6cb;
+      }
+      .status-busy {
+        background: #f8d7da;
+        color: #721c24;
+        border-color: #f5c6cb;
+      }
+      .status-meeting {
+        background: #fff3cd;
+        color: #856404;
+        border-color: #ffeaa7;
+      }
+      .status-away {
+        background: #e2e3e5;
+        color: #383d41;
+        border-color: #d6d8db;
+      }
+
+      .activity {
+        font-size: 3vh;
+        color: #666;
+        /* margin-bottom: 2vh; */
+        line-height: 1.3;
+        /* min-height: 8vh; */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .custom-message {
+        font-size: 2.5vh;
+        color: #888;
+        font-style: italic;
+        margin-bottom: 3vh;
+        /* min-height: 6vh;
+        padding: 2vh; */
+        background: rgba(248, 249, 250, 0.8);
+        border-radius: 15px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        line-height: 1.3;
+      }
+
+      .media-container {
+        margin: 3vh 8vh;
+        padding: 2vh;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        /* max-width: 80vw;
+        max-height: 40vh; */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .media-content {
+        max-width: 100%;
+        width: 100%;
+        /* max-height: 100vh; */
+        object-fit: contain;
+        border-radius: 15px;
+      }
+
+      .last-updated {
+        color: rgba(255, 255, 255, 0.9);
+        font-size: 2vh;
+        margin-top: 2vh;
+        text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+      }
+
+      .qr-section {
+        margin-top: 3vh;
+        padding: 2vh;
+        background: rgba(255, 255, 255, 0.9);
+        border-radius: 15px;
+        display: inline-block;
+      }
+
+      /* Анимации */
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      .status-card > * {
+        animation: fadeIn 0.6s ease-out;
+      }
+
+      /* Портретная ориентация */
+      @media (orientation: portrait) {
+        .container {
+          padding: 2vh;
+        }
+
+        .status-card {
+          padding: 4vh;
+        }
+
+        .user-avatar {
+          width: 15vh;
+          height: 15vh;
+          font-size: 4vh;
+        }
+
+        .user-name {
+          font-size: 3vh;
+        }
+
+        .status-indicator {
+          font-size: 2.5vh;
+          padding: 1.5vh 3vh;
+        }
+
+        .activity {
+          font-size: 2.5vh;
+        }
+      }
+
+      /* Ландшафтная ориентация */
+      @media (orientation: landscape) and (max-height: 600px) {
+        .status-card {
+          padding: 3vh;
+          flex-direction: row;
+          gap: 3vh;
+        }
+
+        .text-content {
+          text-align: left;
+          flex: 1;
+        }
+
+        .media-container {
+          flex: 1;
+          max-height: 30vh;
+        }
+
+        .user-avatar {
+          width: 12vh;
+          height: 12vh;
+          font-size: 3vh;
+        }
+      }
+    </style>
+  </head>
+  <body class="theme-{{ color_scheme }}">
+    <div class="container">
+      <div class="status-card">
+        <div class="texts">
+          <h1 class="user-name">{{ user_name }}</h1>
+
+          <div class="status-indicator status-{{ status }}">
+            {{ status_text }}
+          </div>
+
+          <div class="activity">{{ current_activity }}</div>
+
+          {% if custom_message %}
+          <div class="custom-message">"{{ custom_message }}"</div>
+          {% endif %} {% if media_file and media_type != 'none' %}
+        </div>
+        <div class="media-container">
+          {% if media_type == 'image' or media_type == 'gif' %}
+          <img
+            src="{{ url_for('uploaded_file', filename=media_file) }}"
+            class="media-content"
+            alt="Статус"
+          />
+          {% elif media_type == 'video' %}
+          <video
+            src="{{ url_for('uploaded_file', filename=media_file) }}"
+            class="media-content"
+            autoplay
+            loop
+            muted
+            playsinline
+          >
+            Ваш браузер не поддерживает видео
+          </video>
+          {% endif %}
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="last-updated">
+        Обновлено: <span id="update-time">{{ last_updated }}</span>
+      </div>
+    </div>
+
+    <script>
+      // Автообновление каждые 5 секунд
+      function updateStatus() {
+        fetch("/api/status")
+          .then((response) => response.json())
+          .then((data) => {
+            updateDisplay(data);
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
+      function updateDisplay(data) {
+        // Обновляем тему
+        document.body.className = "theme-" + data.color_scheme;
+
+        // Обновляем имя
+        document.querySelector(".user-name").textContent = data.user_name;
+
+        // Обновляем инициалы в аватаре
+        const avatar = document.querySelector(".user-avatar");
+        const names = data.user_name.split(" ");
+        const initials =
+          names[0][0] + (names[1] ? names[1][0] : names[0][1] || "");
+        avatar.textContent = initials;
+
+        // Обновляем статус
+        const statusElement = document.querySelector(".status-indicator");
+        statusElement.className = `status-indicator status-${data.status}`;
+        statusElement.textContent = data.status_text;
+
+        // Обновляем активность
+        document.querySelector(".activity").textContent = data.current_activity;
+
+        // Обновляем кастомное сообщение
+        const messageElement = document.querySelector(".custom-message");
+        if (data.custom_message) {
+          messageElement.textContent = `"${data.custom_message}"`;
+          messageElement.style.display = "flex";
+        } else {
+          messageElement.style.display = "none";
+        }
+
+        // Обновляем медиа
+        updateMedia(data);
+
+        // Обновляем время
+        document.getElementById("update-time").textContent = data.last_updated;
+      }
+
+      function updateMedia(data) {
+        const mediaContainer = document.querySelector(".media-container");
+        if (data.media_file && data.media_type !== "none") {
+          let mediaHTML = "";
+          if (data.media_type === "image" || data.media_type === "gif") {
+            mediaHTML = `<img src="/static/uploads/${data.media_file}" class="media-content" alt="Статус">`;
+          } else if (data.media_type === "video") {
+            mediaHTML = `<video src="/static/uploads/${data.media_file}" class="media-content" autoplay loop muted playsinline>Ваш браузер не поддерживает видео</video>`;
+          }
+          mediaContainer.innerHTML = mediaHTML;
+          mediaContainer.style.display = "flex";
+        } else {
+          mediaContainer.style.display = "none";
+        }
+      }
+
+      // Обновляем каждые 5 секунд
+      setInterval(updateStatus, 5000);
+
+      // Первое обновление через 2 секунды после загрузки
+      setTimeout(updateStatus, 2000);
+
+      // Обработка изменения ориентации
+      window.addEventListener("orientationchange", function () {
+        setTimeout(() => {
+          window.scrollTo(0, 0);
+        }, 100);
+      });
+    </script>
+  </body>
+</html>

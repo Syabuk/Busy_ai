@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Управление статусом</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+      }
+      #wrapper {
+        min-height: 100%;
+      }
+      body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background: #f5f5f5;
+        min-height: 100vh;
+        padding: 20px;
+      }
+
+      .admin-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        background: white;
+        border-radius: 15px;
+        padding: 30px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        color: #333;
+        margin-bottom: 30px;
+        text-align: center;
+      }
+
+      .dashboard {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 30px;
+      }
+
+      .panel {
+        background: #f8f9fa;
+        border-radius: 10px;
+        padding: 20px;
+      }
+
+      .panel h2 {
+        margin-bottom: 20px;
+        color: #333;
+        border-bottom: 2px solid #667eea;
+        padding-bottom: 10px;
+      }
+
+      .form-group {
+        margin-bottom: 20px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: bold;
+        color: #555;
+      }
+
+      input,
+      select,
+      textarea {
+        width: 100%;
+        padding: 12px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        font-size: 16px;
+        transition: border-color 0.3s ease;
+      }
+
+      input:focus,
+      select:focus,
+      textarea:focus {
+        outline: none;
+        border-color: #667eea;
+      }
+
+      textarea {
+        height: 80px;
+        resize: vertical;
+      }
+
+      .status-buttons {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .status-btn {
+        padding: 15px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        font-weight: bold;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .status-btn.active {
+        transform: scale(0.95);
+        box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
+      }
+
+      .btn-available {
+        background: #d4edda;
+        color: #155724;
+      }
+      .btn-busy {
+        background: #f8d7da;
+        color: #721c24;
+      }
+      .btn-meeting {
+        background: #fff3cd;
+        color: #856404;
+      }
+      .btn-away {
+        background: #e2e3e5;
+        color: #383d41;
+      }
+
+      .color-schemes {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+
+      .color-btn {
+        padding: 10px;
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        cursor: pointer;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      .color-btn.active {
+        border-color: #333;
+      }
+
+      .file-upload {
+        border: 2px dashed #ddd;
+        padding: 30px;
+        text-align: center;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        cursor: pointer;
+        transition: border-color 0.3s ease;
+      }
+
+      .file-upload:hover {
+        border-color: #667eea;
+      }
+
+      .media-history {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .media-item {
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        padding: 10px;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .media-item:hover {
+        border-color: #667eea;
+        transform: scale(1.05);
+      }
+
+      .media-item img,
+      .media-item video {
+        width: 100%;
+        height: 80px;
+        object-fit: cover;
+        border-radius: 4px;
+      }
+
+      .media-item .name {
+        font-size: 12px;
+        margin-top: 5px;
+        word-break: break-all;
+      }
+
+      .templates-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+      }
+
+      .template-card {
+        border: 2px solid #ddd;
+        border-radius: 8px;
+        padding: 15px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+      }
+
+      .template-card:hover {
+        border-color: #667eea;
+        transform: translateY(-2px);
+      }
+
+      .template-card h4 {
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      .template-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+      }
+
+      .btn {
+        padding: 10px 15px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-weight: bold;
+        transition: all 0.3s ease;
+      }
+
+      .btn-primary {
+        background: #667eea;
+        color: white;
+      }
+
+      .btn-danger {
+        background: #dc3545;
+        color: white;
+      }
+
+      .btn-success {
+        background: #28a745;
+        color: white;
+      }
+
+      .preview-section {
+        text-align: center;
+        padding: 20px;
+        background: white;
+        border-radius: 10px;
+        margin-top: 20px;
+      }
+
+      .preview-device {
+        width: 300px;
+        height: 400px;
+        border: 2px solid #333;
+        border-radius: 20px;
+        margin: 0 auto;
+        overflow: hidden;
+        position: relative;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="admin-container">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h1 style="margin: 0;">🎛️ Панель управления статусом</h1>
+        <div style="display: flex; gap: 15px; align-items: center;">
+          <span style="color: #666;">👤 {{ session.get('username', 'Admin') }}</span>
+          <a href="/logout" class="btn btn-danger">🚪 Выход</a>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-bottom: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+        <h2 style="color: white; border-bottom-color: rgba(255,255,255,0.3);">🔑 API Ключ</h2>
+        <p style="margin-bottom: 10px; opacity: 0.9;">Используйте этот ключ для API запросов:</p>
+        <div style="display: flex; gap: 10px; align-items: center;">
+          <code id="api-key" style="background: rgba(255,255,255,0.2); padding: 10px 15px; border-radius: 8px; flex: 1; font-size: 14px; word-break: break-all;">{{ api_key }}</code>
+          <button class="btn btn-success" onclick="copyApiKey()" style="white-space: nowrap;">📋 Копировать</button>
+        </div>
+        <p style="margin-top: 10px; font-size: 12px; opacity: 0.8;">
+          💡 Использование: Добавьте заголовок <code>X-API-Key: ваш_ключ</code> или параметр <code>?api_key=ваш_ключ</code>
+        </p>
+      </div>
+
+      <div class="dashboard">
+        <div class="panel">
+          <h2>📝 Основные настройки</h2>
+
+          <div class="form-group">
+            <label for="user_name">Имя сотрудника:</label>
+            <input
+              type="text"
+              id="user_name"
+              value="{{ current_data.user_name }}"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Статус:</label>
+            <div class="status-buttons">
+              <button class="status-btn btn-available" data-status="available">
+                🟢 Доступен
+              </button>
+              <button class="status-btn btn-busy" data-status="busy">
+                🔴 Занят
+              </button>
+              <button class="status-btn btn-meeting" data-status="meeting">
+                🟡 На встрече
+              </button>
+              <button class="status-btn btn-away" data-status="away">
+                ⚪ Отошёл
+              </button>
+            </div>
+            <input
+              type="text"
+              id="status_text"
+              value="{{ current_data.status_text }}"
+              placeholder="Текст статуса"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="current_activity">Активность:</label>
+            <input
+              type="text"
+              id="current_activity"
+              value="{{ current_data.current_activity }}"
+            />
+          </div>
+
+          <div class="form-group">
+            <label for="custom_message">Сообщение:</label>
+            <textarea id="custom_message">
+{{ current_data.custom_message }}</textarea
+            >
+          </div>
+
+          <div class="form-group">
+            <label>Цветовая схема:</label>
+            <div class="color-schemes">
+              <div class="color-btn theme-blue active" data-theme="blue">
+                Синяя
+              </div>
+              <div class="color-btn theme-red" data-theme="red">Красная</div>
+              <div class="color-btn theme-green" data-theme="green">
+                Зелёная
+              </div>
+              <div class="color-btn theme-yellow" data-theme="yellow">
+                Жёлтая
+              </div>
+              <div class="color-btn theme-purple" data-theme="purple">
+                Фиолетовая
+              </div>
+              <div class="color-btn theme-gray" data-theme="gray">Серая</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2>🖼️ Медиа контент</h2>
+
+          <div class="file-upload" id="file-upload">
+            <p>📁 Перетащите GIF/фото/видео сюда</p>
+            <p><small>PNG, JPG, GIF, MP4, WebM (до 16MB)</small></p>
+            <input
+              type="file"
+              id="media_file"
+              accept="image/*,video/*"
+              style="display: none"
+            />
+          </div>
+
+          <button
+            class="btn btn-danger"
+            onclick="clearMedia()"
+            style="width: 100%; margin-bottom: 20px"
+          >
+            🗑️ Удалить текущее медиа
+          </button>
+
+          <h3>📚 История загрузок:</h3>
+          <div class="media-history" id="media-history">
+            {% for media in media_history %}
+            <div class="media-item" onclick="useMedia('{{ media.filename }}')">
+              {% if media.file_type == 'image' or media.file_type == 'gif' %}
+              <img
+                src="{{ url_for('uploaded_file', filename=media.filename) }}"
+                alt="{{ media.original_name }}"
+              />
+              {% else %}
+              <video
+                src="{{ url_for('uploaded_file', filename=media.filename) }}"
+                muted
+              ></video>
+              {% endif %}
+              <div class="name">{{ media.original_name }}</div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>📋 Шаблоны статусов</h2>
+
+        <div class="form-group">
+          <button
+            class="btn btn-success"
+            onclick="saveTemplate()"
+            style="margin-bottom: 20px"
+          >
+            💾 Сохранить текущие настройки как шаблон
+          </button>
+        </div>
+
+        <div class="templates-grid" id="templates-grid">
+          {% for template in templates %}
+          <div class="template-card">
+            <h4>{{ template.name }}</h4>
+            <p><strong>Статус:</strong> {{ template.status_text }}</p>
+            <p><strong>Активность:</strong> {{ template.current_activity }}</p>
+            {% if template.custom_message %}
+            <p><strong>Сообщение:</strong> {{ template.custom_message }}</p>
+            {% endif %}
+            <div class="template-actions">
+              <button
+                class="btn btn-primary"
+                onclick="applyTemplate({{ template.id }})"
+              >
+                Применить
+              </button>
+              <button
+                class="btn btn-danger"
+                onclick="deleteTemplate({{ template.id }})"
+              >
+                Удалить
+              </button>
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      <div class="preview-section">
+        <h3>📱 Предпросмотр (планшет)</h3>
+        <iframe
+          src="/"
+          style="
+            width: 800px;
+            height: 600px;
+            border: 2px solid #333;
+            border-radius: 10px;
+          "
+        ></iframe>
+      </div>
+
+      <button
+        class="btn btn-primary"
+        onclick="updateStatus()"
+        style="width: 100%; padding: 20px; font-size: 18px; margin-top: 30px"
+      >
+        💾 Сохранить все изменения
+      </button>
+    </div>
+
+    <script>
+      let currentStatus = "{{ current_data.status }}";
+      let currentTheme = "{{ current_data.color_scheme }}";
+
+      // Инициализация интерфейса
+      document.addEventListener("DOMContentLoaded", function () {
+        // Статус кнопки
+        document.querySelectorAll(".status-btn").forEach((btn) => {
+          if (btn.dataset.status === currentStatus) {
+            btn.classList.add("active");
+          }
+          btn.addEventListener("click", function () {
+            document
+              .querySelectorAll(".status-btn")
+              .forEach((b) => b.classList.remove("active"));
+            this.classList.add("active");
+            currentStatus = this.dataset.status;
+          });
+        });
+
+        // Цветовые схемы
+        document.querySelectorAll(".color-btn").forEach((btn) => {
+          if (btn.dataset.theme === currentTheme) {
+            btn.classList.add("active");
+          }
+          btn.addEventListener("click", function () {
+            document
+              .querySelectorAll(".color-btn")
+              .forEach((b) => b.classList.remove("active"));
+            this.classList.add("active");
+            currentTheme = this.dataset.theme;
+          });
+        });
+
+        // Drag & Drop для файлов
+        const fileUpload = document.getElementById("file-upload");
+        const fileInput = document.getElementById("media_file");
+
+        fileUpload.addEventListener("click", () => fileInput.click());
+        fileUpload.addEventListener("dragover", (e) => {
+          e.preventDefault();
+          fileUpload.style.borderColor = "#667eea";
+          fileUpload.style.background = "#f0f4ff";
+        });
+
+        fileUpload.addEventListener("dragleave", () => {
+          fileUpload.style.borderColor = "#ddd";
+          fileUpload.style.background = "";
+        });
+
+        fileUpload.addEventListener("drop", (e) => {
+          e.preventDefault();
+          fileUpload.style.borderColor = "#ddd";
+          fileUpload.style.background = "";
+          if (e.dataTransfer.files.length) {
+            fileInput.files = e.dataTransfer.files;
+          }
+        });
+      });
+
+      async function updateStatus() {
+        const formData = new FormData();
+        formData.append(
+          "user_name",
+          document.getElementById("user_name").value
+        );
+        formData.append("status", currentStatus);
+        formData.append(
+          "status_text",
+          document.getElementById("status_text").value
+        );
+        formData.append(
+          "current_activity",
+          document.getElementById("current_activity").value
+        );
+        formData.append(
+          "custom_message",
+          document.getElementById("custom_message").value
+        );
+        formData.append("color_scheme", currentTheme);
+
+        const fileInput = document.getElementById("media_file");
+        if (fileInput.files.length) {
+          formData.append("media_file", fileInput.files[0]);
+        }
+
+        try {
+          const response = await fetch("/api/update_status", {
+            method: "POST",
+            body: formData,
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            alert("✅ Статус обновлен!");
+            // Обновляем историю медиа
+            updateMediaHistory();
+          } else {
+            alert("❌ Ошибка при обновлении");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("❌ Ошибка при обновлении статуса");
+        }
+      }
+
+      async function useMedia(filename) {
+        try {
+          const response = await fetch("/api/use_media", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ media_file: filename }),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            alert("✅ Медиа применено!");
+          } else {
+            alert("❌ Ошибка при применении медиа");
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("❌ Ошибка при применении медиа");
+        }
+      }
+
+      async function clearMedia() {
+        if (!confirm("Удалить текущее медиа?")) return;
+
+        try {
+          const response = await fetch("/api/clear_media", {
+            method: "POST",
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            alert("✅ Медиа удалено!");
+            location.reload();
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("❌ Ошибка при удалении медиа");
+        }
+      }
+
+      async function saveTemplate() {
+        const templateName = prompt("Введите название шаблона:");
+        if (!templateName) return;
+
+        const templateData = {
+          name: templateName,
+          status: currentStatus,
+          status_text: document.getElementById("status_text").value,
+          current_activity: document.getElementById("current_activity").value,
+          custom_message: document.getElementById("custom_message").value,
+          color_scheme: currentTheme,
+        };
+
+        try {
+          const response = await fetch("/api/save_template", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(templateData),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            alert("✅ Шаблон сохранен!");
+            location.reload();
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("❌ Ошибка при сохранении шаблона");
+        }
+      }
+
+      async function applyTemplate(templateId) {
+        try {
+          const response = await fetch("/api/apply_template", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ template_id: templateId }),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            alert("✅ Шаблон применен!");
+            location.reload();
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("❌ Ошибка при применении шаблона");
+        }
+      }
+
+      async function deleteTemplate(templateId) {
+        if (!confirm("Удалить этот шаблон?")) return;
+
+        try {
+          const response = await fetch("/api/delete_template", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ template_id: templateId }),
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            alert("✅ Шаблон удален!");
+            location.reload();
+          }
+        } catch (error) {
+          console.error("Error:", error);
+          alert("❌ Ошибка при удалении шаблона");
+        }
+      }
+
+      async function updateMediaHistory() {
+        // Здесь можно добавить обновление истории без перезагрузки
+        location.reload();
+      }
+
+      function copyApiKey() {
+        const apiKey = document.getElementById('api-key').textContent;
+        navigator.clipboard.writeText(apiKey).then(() => {
+          alert('✅ API ключ скопирован в буфер обмена!');
+        }).catch(err => {
+          console.error('Error copying:', err);
+          alert('❌ Не удалось скопировать API ключ');
+        });
+      }
+    </script>
+  </body>
+</html>
