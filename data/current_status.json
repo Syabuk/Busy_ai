@@ -1,11 +1,11 @@
 {
   "user_name": "Сябуков Борис",
-  "status": "away",
-  "status_text": "345",
-  "current_activity": "345",
-  "custom_message": "345",
+  "status": "busy",
+  "status_text": "Тихо сидим",
+  "current_activity": "Сосредоточенная работа",
+  "custom_message": "Пожалуйста, не отвлекайте",
   "media_file": "e1616c6d-3b0a-4a7b-b1aa-107a21a74eea_so-busy-working.gif",
   "media_type": "gif",
-  "color_scheme": "purple",
-  "last_updated": "16.03.2026 12:46:43"
+  "color_scheme": "red",
+  "last_updated": "16.03.2026 13:32:08"
 }
