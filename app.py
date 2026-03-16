@@ -24,6 +24,8 @@ USERS_FILE = 'data/users.json'
 API_KEY_FILE = 'data/api_key.json'
 
 # Генерация API ключа при старте
+
+
 def get_or_create_api_key():
     if os.path.exists(API_KEY_FILE):
         with open(API_KEY_FILE, 'r', encoding='utf-8') as f:
@@ -32,6 +34,7 @@ def get_or_create_api_key():
     with open(API_KEY_FILE, 'w', encoding='utf-8') as f:
         json.dump({'api_key': api_key}, f, ensure_ascii=False, indent=2)
     return api_key
+
 
 API_KEY = get_or_create_api_key()
 
@@ -170,10 +173,10 @@ def create_user(username, password):
     users_data = load_users()
     if any(u['username'] == username for u in users_data['users']):
         return False
-    
+
     salt = str(uuid.uuid4())
     password_hash = hashlib.sha256((password + salt).encode()).hexdigest()
-    
+
     users_data['users'].append({
         'username': username,
         'password_hash': password_hash,
@@ -187,11 +190,13 @@ def create_user(username, password):
 def verify_user(username, password):
     """Проверка пользователя"""
     users_data = load_users()
-    user = next((u for u in users_data['users'] if u['username'] == username), None)
+    user = next((u for u in users_data['users']
+                if u['username'] == username), None)
     if not user:
         return False
-    
-    password_hash = hashlib.sha256((password + user['salt']).encode()).hexdigest()
+
+    password_hash = hashlib.sha256(
+        (password + user['salt']).encode()).hexdigest()
     return user['password_hash'] == password_hash
 
 
@@ -218,13 +223,13 @@ def login():
     if request.method == 'POST':
         username = request.form.get('username')
         password = request.form.get('password')
-        
+
         if verify_user(username, password):
             session['logged_in'] = True
             session['username'] = username
             return redirect(url_for('admin'))
         return render_template('login.html', error='Неверное имя пользователя или пароль')
-    
+
     return render_template('login.html', error=None)
 
 
@@ -379,6 +384,8 @@ def apply_template():
         data['current_activity'] = template['current_activity']
         data['custom_message'] = template.get('custom_message', '')
         data['color_scheme'] = template.get('color_scheme', 'blue')
+        data['media_file'] = template.get('media_file', '')
+        data['media_type'] = template.get('media_type', 'none')
 
         save_data(data)
         return jsonify({'success': True, 'data': data})
@@ -411,7 +418,7 @@ def get_presets():
     """API для получения всех пресетов (требуется API ключ)"""
     if not check_api_key():
         return jsonify({'success': False, 'error': 'Invalid or missing API key'}), 401
-    
+
     templates = load_templates()
     return jsonify({'success': True, 'presets': templates})
 
@@ -421,18 +428,24 @@ def create_preset():
     """API для создания пресета (требуется API ключ)"""
     if not check_api_key():
         return jsonify({'success': False, 'error': 'Invalid or missing API key'}), 401
-    
+
     preset_data = request.json
     if not preset_data:
         return jsonify({'success': False, 'error': 'No data provided'}), 400
-    
+
+    # Если медиа не указано в пресете, берём текущее из статуса
+    if 'media_file' not in preset_data or not preset_data.get('media_file'):
+        current_data = load_data()
+        preset_data['media_file'] = current_data.get('media_file', '')
+        preset_data['media_type'] = current_data.get('media_type', 'none')
+
     templates = load_templates()
     new_id = max([t['id'] for t in templates], default=0) + 1
     preset_data['id'] = new_id
-    
+
     templates.append(preset_data)
     save_templates(templates)
-    
+
     return jsonify({'success': True, 'preset': preset_data})
 
 
@@ -441,11 +454,11 @@ def delete_preset(preset_id):
     """API для удаления пресета (требуется API ключ)"""
     if not check_api_key():
         return jsonify({'success': False, 'error': 'Invalid or missing API key'}), 401
-    
+
     templates = load_templates()
     templates = [t for t in templates if t['id'] != preset_id]
     save_templates(templates)
-    
+
     return jsonify({'success': True})
 
 
@@ -454,23 +467,25 @@ def apply_preset(preset_id):
     """API для применения пресета (требуется API ключ)"""
     if not check_api_key():
         return jsonify({'success': False, 'error': 'Invalid or missing API key'}), 401
-    
+
     templates = load_templates()
     template = next((t for t in templates if t['id'] == preset_id), None)
-    
+
     if not template:
         return jsonify({'success': False, 'error': 'Preset not found'}), 404
-    
+
     data = load_data()
     data['status'] = template['status']
     data['status_text'] = template['status_text']
     data['current_activity'] = template['current_activity']
     data['custom_message'] = template.get('custom_message', '')
     data['color_scheme'] = template.get('color_scheme', 'blue')
+    data['media_file'] = template.get('media_file', '')
+    data['media_type'] = template.get('media_type', 'none')
     data['last_updated'] = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
-    
+
     save_data(data)
-    
+
     return jsonify({'success': True, 'data': data})
 
 
@@ -479,10 +494,10 @@ def set_status():
     """API для быстрой смены статуса (требуется API ключ)"""
     if not check_api_key():
         return jsonify({'success': False, 'error': 'Invalid or missing API key'}), 401
-    
+
     data = load_data()
     json_data = request.json
-    
+
     if json_data.get('status'):
         data['status'] = json_data['status']
     if json_data.get('status_text'):
@@ -493,9 +508,9 @@ def set_status():
         data['custom_message'] = json_data['custom_message']
     if json_data.get('color_scheme'):
         data['color_scheme'] = json_data['color_scheme']
-    
+
     save_data(data)
-    
+
     return jsonify({'success': True, 'data': data})
 
 
@@ -509,9 +524,9 @@ if __name__ == '__main__':
         print("   Please change password after first login!")
         print("=" * 50)
         create_user('admin', 'admin123')
-    
+
     print(f"\nAPI Key: {API_KEY}")
     print("For API requests use header: X-API-Key: " + API_KEY)
     print("\nStarting server...\n")
-    
+
     app.run(host='0.0.0.0', port=5000, debug=True)

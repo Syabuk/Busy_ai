@@ -36,12 +36,14 @@
     "id": 4
   },
   {
-    "name": "1234",
+    "name": "нег",
     "status": "away",
-    "status_text": "sf",
-    "current_activity": "sfd",
-    "custom_message": "Ntcnbfsds",
-    "color_scheme": "red",
+    "status_text": "345",
+    "current_activity": "345",
+    "custom_message": "345",
+    "color_scheme": "purple",
+    "media_file": "e1616c6d-3b0a-4a7b-b1aa-107a21a74eea_so-busy-working.gif",
+    "media_type": "gif",
     "id": 5
   }
 ]

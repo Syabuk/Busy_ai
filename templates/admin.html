@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
@@ -281,23 +281,62 @@
   </head>
   <body>
     <div class="admin-container">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-        <h1 style="margin: 0;">🎛️ Панель управления статусом</h1>
-        <div style="display: flex; gap: 15px; align-items: center;">
-          <span style="color: #666;">👤 {{ session.get('username', 'Admin') }}</span>
+      <div
+        style="
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 20px;
+        "
+      >
+        <h1 style="margin: 0">🎛️ Панель управления статусом</h1>
+        <div style="display: flex; gap: 15px; align-items: center">
+          <span style="color: #666"
+            >👤 {{ session.get('username', 'Admin') }}</span
+          >
           <a href="/logout" class="btn btn-danger">🚪 Выход</a>
         </div>
       </div>
 
-      <div class="panel" style="margin-bottom: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
-        <h2 style="color: white; border-bottom-color: rgba(255,255,255,0.3);">🔑 API Ключ</h2>
-        <p style="margin-bottom: 10px; opacity: 0.9;">Используйте этот ключ для API запросов:</p>
-        <div style="display: flex; gap: 10px; align-items: center;">
-          <code id="api-key" style="background: rgba(255,255,255,0.2); padding: 10px 15px; border-radius: 8px; flex: 1; font-size: 14px; word-break: break-all;">{{ api_key }}</code>
-          <button class="btn btn-success" onclick="copyApiKey()" style="white-space: nowrap;">📋 Копировать</button>
+      <div
+        class="panel"
+        style="
+          margin-bottom: 30px;
+          background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+          color: white;
+        "
+      >
+        <h2 style="color: white; border-bottom-color: rgba(255, 255, 255, 0.3)">
+          🔑 API Ключ
+        </h2>
+        <p style="margin-bottom: 10px; opacity: 0.9">
+          Используйте этот ключ для API запросов:
+        </p>
+        <div style="display: flex; gap: 10px; align-items: center">
+          <code
+            id="api-key"
+            style="
+              background: rgba(255, 255, 255, 0.2);
+              padding: 10px 15px;
+              border-radius: 8px;
+              flex: 1;
+              font-size: 14px;
+              word-break: break-all;
+            "
+            >{{ api_key }}</code
+          >
+          <button
+            class="btn btn-success"
+            onclick="copyApiKey()"
+            style="white-space: nowrap"
+          >
+            📋 Копировать
+          </button>
         </div>
-        <p style="margin-top: 10px; font-size: 12px; opacity: 0.8;">
-          💡 Использование: Добавьте заголовок <code>X-API-Key: ваш_ключ</code> или параметр <code>?api_key=ваш_ключ</code>
+        <p style="margin-top: 10px; font-size: 12px; opacity: 0.8">
+          💡 Использование: Добавьте заголовок
+          <code>X-API-Key: ваш_ключ</code> или параметр
+          <code>?api_key=ваш_ключ</code>
         </p>
       </div>
 
@@ -546,20 +585,20 @@
         const formData = new FormData();
         formData.append(
           "user_name",
-          document.getElementById("user_name").value
+          document.getElementById("user_name").value,
         );
         formData.append("status", currentStatus);
         formData.append(
           "status_text",
-          document.getElementById("status_text").value
+          document.getElementById("status_text").value,
         );
         formData.append(
           "current_activity",
-          document.getElementById("current_activity").value
+          document.getElementById("current_activity").value,
         );
         formData.append(
           "custom_message",
-          document.getElementById("custom_message").value
+          document.getElementById("custom_message").value,
         );
         formData.append("color_scheme", currentTheme);
 
@@ -643,6 +682,8 @@
           current_activity: document.getElementById("current_activity").value,
           custom_message: document.getElementById("custom_message").value,
           color_scheme: currentTheme,
+          media_file: "{{ current_data.media_file }}",
+          media_type: "{{ current_data.media_type }}",
         };
 
         try {
@@ -718,13 +759,16 @@
       }
 
       function copyApiKey() {
-        const apiKey = document.getElementById('api-key').textContent;
-        navigator.clipboard.writeText(apiKey).then(() => {
-          alert('✅ API ключ скопирован в буфер обмена!');
-        }).catch(err => {
-          console.error('Error copying:', err);
-          alert('❌ Не удалось скопировать API ключ');
-        });
+        const apiKey = document.getElementById("api-key").textContent;
+        navigator.clipboard
+          .writeText(apiKey)
+          .then(() => {
+            alert("✅ API ключ скопирован в буфер обмена!");
+          })
+          .catch((err) => {
+            console.error("Error copying:", err);
+            alert("❌ Не удалось скопировать API ключ");
+          });
       }
     </script>
   </body>
