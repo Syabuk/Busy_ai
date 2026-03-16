@@ -315,6 +315,8 @@
             // Если время обновления изменилось - перезагружаем страницу
             if (data.last_updated !== lastUpdateTime) {
               lastUpdateTime = data.last_updated;
+              // Сигнализируем другим вкладкам об обновлении
+              triggerUpdate();
               // Добавляем timestamp чтобы избежать кэширования
               window.location.reload(true);
               return;
@@ -322,6 +324,31 @@
             updateDisplay(data);
           })
           .catch((error) => console.error("Error:", error));
+      }
+
+      // Функция для принудительного обновления (вызывается при изменении статуса)
+      function forceRefresh() {
+        fetch("/api/status", { cache: "no-cache" })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.last_updated !== lastUpdateTime) {
+              lastUpdateTime = data.last_updated;
+              window.location.reload(true);
+            }
+          })
+          .catch((error) => console.error("Error:", error));
+      }
+
+      // Слушаем события обновления от других вкладок/окон
+      window.addEventListener("storage", function (e) {
+        if (e.key === "status_update") {
+          forceRefresh();
+        }
+      });
+
+      // Обновляем метку времени в localStorage при изменении статуса
+      function triggerUpdate() {
+        localStorage.setItem("status_update", Date.now().toString());
       }
 
       function updateDisplay(data) {
@@ -390,6 +417,9 @@
           window.scrollTo(0, 0);
         }, 100);
       });
+
+      // Делаем функцию доступной для внешнего вызова
+      window.refreshPage = forceRefresh;
     </script>
   </body>
 </html>

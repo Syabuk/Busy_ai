@@ -267,6 +267,16 @@ def get_status():
     return jsonify(data)
 
 
+@app.route('/api/refresh', methods=['POST'])
+def refresh_page():
+    """API для принудительного обновления страницы (сигнал клиенту)"""
+    # Обновляем timestamp чтобы клиент обнаружил изменение
+    data = load_data()
+    data['last_updated'] = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
+    save_data(data)
+    return jsonify({'success': True, 'data': data})
+
+
 @app.route('/api/update_status', methods=['POST'])
 def update_status():
     """API для обновления статуса"""
