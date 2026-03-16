@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=no"
     />
-    <meta http-equiv="refresh" content="60" />
+    <!-- <meta http-equiv="refresh" content="60" /> -->
     <title>Статус занятости</title>
     <style>
       * {
@@ -50,7 +50,7 @@
       }
 
       .status-card {
-        background: rgba(255, 255, 255, 0.95);
+        /* background: rgba(255, 255, 255, 0.95); */
         border-radius: 30px;
         padding: 5vh;
         box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
@@ -87,7 +87,7 @@
       .user-name {
         font-size: 6vh;
         font-weight: bold;
-        color: #333;
+        /* color: #333; */
         margin-bottom: 2vh;
         line-height: 1.2;
       }
@@ -138,12 +138,12 @@
 
       .custom-message {
         font-size: 2.5vh;
-        color: #888;
+        /* color: #888; */
         font-style: italic;
         margin-bottom: 3vh;
         /* min-height: 6vh;
         padding: 2vh; */
-        background: rgba(248, 249, 250, 0.8);
+        /* background: rgba(248, 249, 250, 0.8); */
         border-radius: 15px;
         display: flex;
         align-items: center;
@@ -263,13 +263,11 @@
     <div class="container">
       <div class="status-card">
         <div class="texts">
-          <h1 class="user-name">{{ user_name }}</h1>
+          <h1 class="user-name">{{ current_activity }}</h1>
 
           <div class="status-indicator status-{{ status }}">
             {{ status_text }}
           </div>
-
-          <div class="activity">{{ current_activity }}</div>
 
           {% if custom_message %}
           <div class="custom-message">"{{ custom_message }}"</div>
@@ -356,7 +354,8 @@
         document.body.className = "theme-" + data.color_scheme;
 
         // Обновляем имя
-        document.querySelector(".user-name").textContent = data.user_name;
+        document.querySelector(".user-name").textContent =
+          data.current_activity;
 
         // Обновляем инициалы в аватаре
         const avatar = document.querySelector(".user-avatar");
