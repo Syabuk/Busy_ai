@@ -1,11 +1,11 @@
 {
   "user_name": "Сябуков Борис",
-  "status": "meeting",
-  "status_text": "На встрече",
-  "current_activity": "Обсуждаю проект с командой",
-  "custom_message": "Вернусь через 30 минут",
-  "media_file": "61e4395f-70fb-47b1-b93c-586d0bf0cb5b_brown-bear.gif",
+  "status": "away",
+  "status_text": "Отошёл",
+  "current_activity": "Обеденный перерыв",
+  "custom_message": "Вернусь в 14:00",
+  "media_file": "e1616c6d-3b0a-4a7b-b1aa-107a21a74eea_so-busy-working.gif",
   "media_type": "gif",
-  "color_scheme": "yellow",
-  "last_updated": "27.02.2026 15:19:11"
+  "color_scheme": "gray",
+  "last_updated": "16.03.2026 12:34:54"
 }

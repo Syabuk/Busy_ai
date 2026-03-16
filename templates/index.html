@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
   <head>
     <meta charset="UTF-8" />
@@ -304,11 +304,21 @@
     </div>
 
     <script>
+      // Храним время последнего обновления для детектирования изменений
+      let lastUpdateTime = "{{ last_updated }}";
+
       // Автообновление каждые 5 секунд
       function updateStatus() {
         fetch("/api/status")
           .then((response) => response.json())
           .then((data) => {
+            // Если время обновления изменилось - перезагружаем страницу
+            if (data.last_updated !== lastUpdateTime) {
+              lastUpdateTime = data.last_updated;
+              // Добавляем timestamp чтобы избежать кэширования
+              window.location.reload(true);
+              return;
+            }
             updateDisplay(data);
           })
           .catch((error) => console.error("Error:", error));

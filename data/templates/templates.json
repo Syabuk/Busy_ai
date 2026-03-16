@@ -34,5 +34,14 @@
     "custom_message": "Пожалуйста, не отвлекайте",
     "color_scheme": "red",
     "id": 4
+  },
+  {
+    "name": "1234",
+    "status": "away",
+    "status_text": "sf",
+    "current_activity": "sfd",
+    "custom_message": "Ntcnbfsds",
+    "color_scheme": "red",
+    "id": 5
   }
 ]
