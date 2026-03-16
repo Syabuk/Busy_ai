@@ -573,10 +573,6 @@
 
       async function updateStatus() {
         const formData = new FormData();
-        formData.append(
-          "user_name",
-          document.getElementById("user_name").value,
-        );
         formData.append("status", currentStatus);
         formData.append(
           "status_text",
